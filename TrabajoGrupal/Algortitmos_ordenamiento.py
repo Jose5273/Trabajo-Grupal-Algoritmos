@@ -23,7 +23,7 @@ def ejecutar_bubble_sort():
         try:
             cantidad = int(entry_cantidad.get())
             if cantidad > 50_000:
-                advertencia_label.config(text="ADVERTENCIA: Máximo recomendado es 5,000 números.")
+                advertencia_label.config(text="Máximo recomendado es 50,000 números.")
                 advertencia_label.place(x=160, y=85)
                 return
 
@@ -125,4 +125,3 @@ boton_iterativos.place(x=5, y=55)
 boton_iterativos.bind("<Enter>", mostrar_boton_bubble)
 
 raiz.mainloop()
-
