@@ -156,46 +156,6 @@ def ejecutar_insertion_sort():
 
     boton_procesar.config(command=procesar)
 
-#Busqueda Secuencial    
-def ejecutar_busqueda_secuencial():
-    ocultar_todos()
-    
-    label_instrucciones.place(x=160, y=55)
-    entry_cantidad.place(x=450, y=55)
-    boton_procesar.place(x=160, y=115)
-    numeros_generados_label.place(x=160, y=180)
-    numeros_ordenados_label.place(x=160, y=300)
-
-    def procesar():
-        advertencia_label.place_forget()
-        tiempo_label.place_forget()
-        numeros_generados_label.delete(1.0, END)
-        numeros_ordenados_label.delete(1.0, END)
-
-        try:
-            cantidad = int(entry_cantidad.get())
-            if cantidad > 50_000:
-                advertencia_label.config(text="Máximo recomendado es 50,000 números.")
-                advertencia_label.place(x=160, y=85)
-                return
-
-            numeros = generar_numeros(cantidad)
-            numeros_generados_label.insert(END, str(numeros))
-
-            inicio = time.time()
-            numeros_ordenados = busqueda_secuencial(numeros) 
-            fin = time.time()
-
-            numeros_ordenados_label.insert(END, str(numeros_ordenados))
-            tiempo_label.config(text=f"Tiempo de ordenamiento: {fin - inicio:.2f} segundos")
-            tiempo_label.place(x=160, y=450)
-
-        except ValueError:
-            advertencia_label.config(text="ERROR: Ingresa un número válido.")
-            advertencia_label.place(x=160, y=85)
-
-    boton_procesar.config(command=procesar)
-
 def ejecutar_selection_sort():
     ocultar_todos()
 
@@ -322,22 +282,76 @@ def ejecutar_busqueda_binaria():
     label_busqueda.place(x=160, y=85)
     entry_busqueda.place(x=450, y=85)
 
+#Busqueda Secuencial    
+def ejecutar_busqueda_secuencial():
+    ocultar_todos()
+
+    label_instrucciones.place(x=160, y=55)
+    entry_cantidad.place(x=450, y=55)
+    label_busqueda.place(x=160, y=85)
+    entry_elemento_buscar.place(x=450, y=85)  # MOSTRAR entrada para el número a buscar
+    boton_procesar.place(x=160, y=115)
+    numeros_generados_label.place(x=160, y=180)
+    numeros_ordenados_label.place(x=160, y=300)
+
+    def procesar():
+        advertencia_label.place_forget()
+        tiempo_label.place_forget()
+        numeros_generados_label.delete(1.0, END)
+        numeros_ordenados_label.delete(1.0, END)
+
+        try:
+            cantidad = int(entry_cantidad.get())
+            numero_a_buscar = int(entry_elemento_buscar.get())  # Obtén el número a buscar
+
+            if cantidad > 50_000:
+                advertencia_label.config(text="Máximo recomendado es 50,000 números.")
+                advertencia_label.place(x=160, y=85)
+                return
+
+            # Generar números aleatorios
+            numeros = generar_numeros(cantidad)
+            numeros_generados_label.insert(END, f"Números Generados:\n{numeros}")
+
+            # Ordenar los números
+            numeros_ordenados = sorted(numeros)
+            numeros_ordenados_label.insert(END, f"Números Ordenados:\n{numeros_ordenados}")
+
+            # Realizar la búsqueda secuencial
+            inicio = time.time()
+            encontrado = busqueda_secuencial(numeros, numero_a_buscar)  # Realiza la búsqueda
+            fin = time.time()
+
+            # Mostrar resultado de la búsqueda
+            resultado = f"Número {'encontrado' if encontrado else 'no encontrado'} en el arreglo."
+            numeros_ordenados_label.insert(END, f"\n{resultado}")
+            tiempo_label.config(text=f"Tiempo de búsqueda: {fin - inicio:.2f} segundos")
+            tiempo_label.place(x=160, y=450)
+
+        except ValueError:
+            advertencia_label.config(text="ERROR: Ingresa números válidos en ambas entradas.")
+            advertencia_label.place(x=160, y=85)
+
+
+    boton_procesar.config(command=procesar)
+
+
 # Mostrar botones de algoritmos iterativos (Bubble Sort e Insertion Sort)
 def mostrar_botones_iterativos(event):
     ocultar_todos()
     global boton_bubble_sort, boton_insertion_sort
     boton_bubble_sort = Button(principal, text="Algoritmo Bubble Sort", width=30, fg="blue", font=("Times New Roman", 12), command=ejecutar_bubble_sort)
     boton_insertion_sort = Button(principal, text="Algoritmo Insertion Sort", width=30, fg="blue", font=("Times New Roman", 12), command=ejecutar_insertion_sort)
-    boton_busqueda_secuencial = Button(principal, text="Algoritmo Merge Sort", width=30, fg="blue", font=("Times New Roman", 12), command=ejecutar_busqueda_secuencial)  # Nueva función
+    boton_busqueda_secuencial = Button(principal, text="Algoritmo Busqueda Secuencial", width=30, fg="blue", font=("Times New Roman", 12), command=ejecutar_busqueda_secuencial)  # Nueva función
     boton_selection_sort = Button(principal, text="Algoritmo Selection Sort", width=30, fg="blue", font=("Times New Roman", 12), command=ejecutar_selection_sort)  # Nueva función
     boton_heap_sort = Button(principal, text="Algoritmo Heap Sort", width=30, fg="blue", font=("Times New Roman", 12), command=ejecutar_heap_sort)  # Nueva función
     
     # Colocar botones
     boton_bubble_sort.place(x=160, y=55)
     boton_insertion_sort.place(x=160, y=85)
-    boton_busqueda_secuencial.place(x=160, y=115)  # Botón Merge Sort
-    boton_selection_sort.place(x=160, y=145)  # Botón Selection Sort
-    boton_heap_sort.place(x=160, y=175)  # Botón Heap Sort
+    boton_busqueda_secuencial.place(x=160, y=115) 
+    boton_selection_sort.place(x=160, y=145)
+    boton_heap_sort.place(x=160, y=175)  
 
     # Agregar botones a la lista global
     botones_algoritmos.extend([boton_bubble_sort, boton_insertion_sort, boton_busqueda_secuencial, boton_selection_sort, boton_heap_sort])
@@ -414,5 +428,7 @@ boton_recursivos.bind("<Enter>", mostrar_botones_recursivos)
 # Elementos para la búsqueda binaria
 label_busqueda = Label(principal, text="Número a buscar:", font=("Times New Roman", 12))
 entry_busqueda = Entry(principal, font=("Times New Roman", 12), width=10)
+
+entry_elemento_buscar = Entry(principal, font=("Times New Roman", 12), width=10)
 
 raiz.mainloop()
